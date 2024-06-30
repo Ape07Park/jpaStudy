@@ -32,11 +32,18 @@ public class CustomerJpaExam {
               /*
                 C 작업
                */
+              // 영속성 컨텍스트의 1차 캐시에 등록. 커밋 시 db에 insert
 //            em.persist(Customer.sample()); // 매개변수로 실제 넣을 객체 넣기
+              Customer customer = new Customer("ID0001", "Kim");
+              em.persist(customer); // 영속성 컨텍스트의 1차 캐시에 등록.
+
+
 
             /*
                 R 작업
             */
+            // 영속성 컨텍스트에 있는 것을 find()메소드 사용 시 영속성 컨텍스트의 1차 캐시에 있는 것을 읽어옴. 없으면 db에서 select 쿼리를 통해 가져옴
+
             // *find() 메서드는 EntityManager가 DB에서 가져온 데이터를 기본생성자를 이용해 인스턴스를 생성함
             Customer foundCustomer = em.find(Customer.class, "ID0001"); // 매개변수로 가져올 객체, PK 지정
             System.out.println("가져온 customer의 내용물" + foundCustomer.toString());
@@ -45,17 +52,17 @@ public class CustomerJpaExam {
                 U 작업: 반드시 먼저 R 작업 필요
              */
 
-            // set으로 변경
-//            foundCustomer.setName("Park");
-            System.out.println("수정한 customer의 내용물" + foundCustomer.toString());
+//            // set으로 변경
+////            foundCustomer.setName("Park");
+//            System.out.println("수정한 customer의 내용물" + foundCustomer.toString());
+//
+//            /*
+//                D 작업
+//             */
+//            em.remove(foundCustomer);
+//            System.out.println("제거 customer의 내용물" + foundCustomer.toString());
 
-            /*
-                D 작업
-             */
-            em.remove(foundCustomer);
-            System.out.println("제거 customer의 내용물" + foundCustomer.toString());
-
-            // 트랜젝션 커밋 즉 CRUD 작업 적용. 트랜젝션 커밋 시 EntityManager의 관리 하에 있는 것은 업데이트된 것이 자동 반영됨
+            // 트랜젝션 커밋 즉 CRUD 작업 DB에 적용. 트랜젝션 커밋 시 EntityManager의 관리 하에 있는 것은 업데이트된 것이 자동 반영됨
             tx.commit();
         } catch (Exception e) {
 
